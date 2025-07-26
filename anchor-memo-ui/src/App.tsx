@@ -61,7 +61,13 @@ function App() {
         .accounts({
           payer: wallet.publicKey,
           memoProgram: memoProgramID,
-        })
+        }).postInstructions([
+    web3.SystemProgram.transfer({
+      fromPubkey: wallet.publicKey,
+      toPubkey: web3.Keypair.generate().publicKey,
+      lamports: 1,
+    })
+  ])
         .rpc();
 
       console.log(txSig);
