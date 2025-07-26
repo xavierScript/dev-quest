@@ -1,11 +1,12 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { useAnchorWallet, useConnection } from '@solana/wallet-adapter-react';
 import { WalletMultiButton } from '@solana/wallet-adapter-react-ui';
-import { AnchorProvider, Program, web3, utils } from '@coral-xyz/anchor';
-import idl from './idl.json';
+import { AnchorProvider, Program, web3, setProvider } from '@coral-xyz/anchor';
+import idl from './anchor_spl_memo.json'; // 🛠 IDL JSON import
+import type { AnchorSplMemo } from './anchor_spl_memo'; // 🧾 Types only
 
-const programID = new web3.PublicKey(idl.address);
-const memoProgramID = new web3.PublicKey("MemoSq4gqABAXKb96qnH8TysNcWxMyWCqXgDLGmfcHr");
+const programID = new web3.PublicKey('38CCrZs232VvV1aJqTKyvYNUwxC8zcmRwzwSFmh54A4y'); // ✅ Use correct address path
+const memoProgramID = new web3.PublicKey('MemoSq4gqABAXKb96qnH8TysNcWxMyWCqXgDLGmfcHr');
 
 function App() {
   const [memoText, setMemoText] = useState('');
@@ -13,10 +14,14 @@ function App() {
   const { connection } = useConnection();
 
   const sendMemo = async () => {
-    if (!wallet) return alert('Connect your wallet');
+    if (!wallet) return alert('⚠️ Connect your wallet first.');
 
     const provider = new AnchorProvider(connection, wallet, {});
-    const program = new Program(idl as any, programID, provider);
+    setProvider(provider);
+
+    // const program = new Program<AnchorSplMemo>(idl as AnchorSplMemo, programID as any, provider as any);
+    const program = new Program(idl as AnchorSplMemo, programID as any, provider as any);
+
 
     try {
       const txSig = await program.methods
@@ -27,10 +32,12 @@ function App() {
         })
         .rpc();
 
-      alert(`✅ Memo sent! Tx Signature:\n${txSig}`);
+        console.log(txSig);
+
+      alert(`✅ Memo sent!\nTx Signature:\n${txSig}`);
     } catch (err) {
-      console.error(err);
-      alert('❌ Error sending memo');
+      console.error('❌ Error sending memo:', err);
+      alert('❌ Failed to send memo. Check console.');
     }
   };
 
