@@ -1,7 +1,7 @@
 use anchor_lang::prelude::*;
 use anchor_spl::memo::{build_memo, BuildMemo, Memo};
 
-declare_id!("2p1eq5RNKv4MrESEPtA9za96diQnRHxLd48gz33Yq7r4");
+declare_id!("38CCrZs232VvV1aJqTKyvYNUwxC8zcmRwzwSFmh54A4y");
 
 #[program]
 pub mod anchor_spl_memo {

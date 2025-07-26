@@ -5,7 +5,7 @@ resolution = true
 skip-lint = false
 
 [programs.localnet]
-anchor_spl_memo = "2p1eq5RNKv4MrESEPtA9za96diQnRHxLd48gz33Yq7r4"
+anchor_spl_memo = "38CCrZs232VvV1aJqTKyvYNUwxC8zcmRwzwSFmh54A4y"
 
 [registry]
 url = "https://api.apr.dev"
