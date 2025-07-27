@@ -23,6 +23,41 @@ function App() {
   const wallet = useAnchorWallet();
   const { connection } = useConnection();
 
+  // Handle keyboard shortcuts
+  useEffect(() => {
+    const handleKeyPress = (e: KeyboardEvent) => {
+      // Only process if not in loading state
+      if (isLoading) return;
+
+      // Enter to send memo
+      if (e.key === 'Enter' && !e.shiftKey) {
+        e.preventDefault();
+        if (memoText.trim() && wallet) {
+          sendMemo();
+        } else if (!wallet) {
+          setError({
+            message: 'Please connect your wallet to send memos',
+            severity: 'warning',
+            code: 'NO_WALLET'
+          });
+          setShowWalletHighlight(true);
+          setTimeout(() => setShowWalletHighlight(false), 3000);
+        } else if (!memoText.trim()) {
+          handleEmptyMemoClick();
+        }
+      }
+
+      // Escape to clear input
+      if (e.key === 'Escape') {
+        setMemoText('');
+        setError(null);
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyPress);
+    return () => window.removeEventListener('keydown', handleKeyPress);
+  }, [memoText, wallet, isLoading]); // Dependencies for the effect
+
   // Auto-hide success notification
   useEffect(() => {
     if (successNotification) {
@@ -214,7 +249,7 @@ function App() {
             disabled={isLoading}
           />
           <div className="input-tooltip">
-            Please enter your memo text here
+            Press Enter to send • Esc to clear
           </div>
           <div className={`character-counter ${
             memoText.length >= MEMO_MAX_LENGTH ? 'at-limit' :

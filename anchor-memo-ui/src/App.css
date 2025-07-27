@@ -119,6 +119,17 @@ body {
   pointer-events: none;
 }
 
+.input-tooltip::after {
+  content: '';
+  position: absolute;
+  bottom: -4px;
+  left: 50%;
+  transform: translateX(-50%);
+  border-width: 4px;
+  border-style: solid;
+  border-color: rgba(255, 152, 0, 0.9) transparent transparent transparent;
+}
+
 .memo-input.empty:focus + .input-tooltip {
   opacity: 1;
   transform: translateY(0);
