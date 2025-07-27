@@ -12,6 +12,8 @@ const memoProgramID = new web3.PublicKey('MemoSq4gqABAXKb96qnH8TysNcWxMyWCqXgDLG
 
 
 function App() {
+  const MEMO_MAX_LENGTH = 280; // Set a reasonable max length for the memo
+  
   const [memoText, setMemoText] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<ErrorType | null>(null);
@@ -113,25 +115,29 @@ function App() {
         setError({
           message: 'Insufficient funds in your wallet to complete this transaction',
           severity: 'error',
-          code: 'INSUFFICIENT_FUNDS'
+          code: 'INSUFFICIENT_FUNDS',
+          isRetriable: false
         });
       } else if (err.message?.includes('User rejected')) {
         setError({
           message: 'Transaction was cancelled by user',
           severity: 'warning',
-          code: 'USER_CANCELLED'
+          code: 'USER_CANCELLED',
+          isRetriable: true
         });
       } else if (err.message?.includes('timeout')) {
         setError({
           message: 'Transaction timed out. Please try again',
           severity: 'error',
-          code: 'TIMEOUT'
+          code: 'TIMEOUT',
+          isRetriable: true
         });
       } else {
         setError({
           message: 'Failed to send memo. Please try again',
           severity: 'error',
-          code: 'UNKNOWN_ERROR'
+          code: 'UNKNOWN_ERROR',
+          isRetriable: true
         });
       }
     } finally {
@@ -174,7 +180,18 @@ function App() {
 
         {error && (
           <div className={`error-message error-${error.severity}`}>
-            {error.message}
+            <span>{error.message}</span>
+            {error.isRetriable && (
+              <button 
+                onClick={() => {
+                  setError(null);
+                  sendMemo();
+                }}
+                className="retry-button"
+              >
+                Retry
+              </button>
+            )}
           </div>
         )}
         
@@ -184,16 +201,26 @@ function App() {
             placeholder="Type your memo..."
             value={memoText}
             onChange={(e) => {
-              setMemoText(e.target.value);
-              if (error?.code === 'EMPTY_MEMO') {
-                setError(null);
+              const newText = e.target.value;
+              if (newText.length <= MEMO_MAX_LENGTH) {
+                setMemoText(newText);
+                if (error?.code === 'EMPTY_MEMO') {
+                  setError(null);
+                }
               }
             }}
+            maxLength={MEMO_MAX_LENGTH}
             className={`memo-input ${!memoText.trim() ? 'empty' : ''} ${isShaking ? 'shake' : ''}`}
             disabled={isLoading}
           />
           <div className="input-tooltip">
             Please enter your memo text here
+          </div>
+          <div className={`character-counter ${
+            memoText.length >= MEMO_MAX_LENGTH ? 'at-limit' :
+            memoText.length >= MEMO_MAX_LENGTH * 0.9 ? 'near-limit' : ''
+          }`}>
+            {memoText.length}/{MEMO_MAX_LENGTH}
           </div>
         </div>
         

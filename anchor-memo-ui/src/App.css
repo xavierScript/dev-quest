@@ -124,6 +124,23 @@ body {
   transform: translateY(0);
 }
 
+.character-counter {
+  position: absolute;
+  right: 8px;
+  bottom: -22px;
+  font-size: 0.8rem;
+  color: rgba(255, 255, 255, 0.7);
+  transition: color 0.2s ease;
+}
+
+.character-counter.near-limit {
+  color: #ffd700;
+}
+
+.character-counter.at-limit {
+  color: #ff6b6b;
+}
+
 /* Floating particles animation */
 .particles {
   position: fixed;
