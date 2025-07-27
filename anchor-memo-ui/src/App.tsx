@@ -153,7 +153,12 @@ function App() {
         <h1 className="app-title">⛓️ MemoChain</h1>
         
         <div className="wallet-button-container">
-          <WalletMultiButton className="custom-wallet-button" />
+          <div className="tooltip-container">
+            <WalletMultiButton className="custom-wallet-button" />
+            <div className="tooltip">
+              Connect your Solana wallet to send memos on the blockchain
+            </div>
+          </div>
         </div>
 
         {error && (
