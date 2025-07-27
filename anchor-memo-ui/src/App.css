@@ -78,6 +78,32 @@ body {
   40%, 60% { transform: translate3d(3px, 0, 0); }
 }
 
+.wallet-button-container {
+  position: relative;
+}
+
+.wallet-highlight {
+  position: absolute;
+  top: -5px;
+  left: -5px;
+  right: -5px;
+  bottom: -5px;
+  border-radius: 8px;
+  animation: pulse 1.5s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+  pointer-events: none;
+}
+
+@keyframes pulse {
+  0%, 100% {
+    border: 2px solid rgba(124, 58, 237, 0);
+    box-shadow: 0 0 0 0 rgba(124, 58, 237, 0.7);
+  }
+  50% {
+    border: 2px solid rgba(124, 58, 237, 0.5);
+    box-shadow: 0 0 0 10px rgba(124, 58, 237, 0);
+  }
+}
+
 .input-tooltip {
   position: absolute;
   left: 0;

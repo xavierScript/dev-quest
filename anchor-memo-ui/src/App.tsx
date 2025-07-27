@@ -17,6 +17,7 @@ function App() {
   const [error, setError] = useState<ErrorType | null>(null);
   const [successNotification, setSuccessNotification] = useState<{ message: string; txUrl: string } | null>(null);
   const [isShaking, setIsShaking] = useState(false);
+  const [showWalletHighlight, setShowWalletHighlight] = useState(false);
   const wallet = useAnchorWallet();
   const { connection } = useConnection();
 
@@ -64,6 +65,8 @@ function App() {
         severity: 'warning',
         code: 'NO_WALLET'
       });
+      setShowWalletHighlight(true);
+      setTimeout(() => setShowWalletHighlight(false), 3000);
       return;
     }
 
@@ -166,6 +169,7 @@ function App() {
               Connect your Solana wallet to send memos on the blockchain
             </div>
           </div>
+          {showWalletHighlight && <div className="wallet-highlight" />}
         </div>
 
         {error && (
@@ -194,8 +198,22 @@ function App() {
         </div>
         
         <button
-          onClick={memoText.trim() ? sendMemo : handleEmptyMemoClick}
-          disabled={isLoading || !wallet}
+          onClick={() => {
+            if (!wallet) {
+              setError({
+                message: 'Please connect your wallet to send memos',
+                severity: 'warning',
+                code: 'NO_WALLET'
+              });
+              setShowWalletHighlight(true);
+              setTimeout(() => setShowWalletHighlight(false), 3000);
+            } else if (!memoText.trim()) {
+              handleEmptyMemoClick();
+            } else {
+              sendMemo();
+            }
+          }}
+          disabled={isLoading}
           className={`send-button ${isLoading ? 'loading' : ''}`}
         >
           {isLoading ? 'Sending...' : 'Send Memo'}
