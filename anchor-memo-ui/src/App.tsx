@@ -16,6 +16,7 @@ function App() {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<ErrorType | null>(null);
   const [successNotification, setSuccessNotification] = useState<{ message: string; txUrl: string } | null>(null);
+  const [isShaking, setIsShaking] = useState(false);
   const wallet = useAnchorWallet();
   const { connection } = useConnection();
 
@@ -44,6 +45,16 @@ function App() {
     createParticles();
   }, []);
 
+  const handleEmptyMemoClick = () => {
+    setIsShaking(true);
+    setError({
+      message: 'Please enter some text for your memo',
+      severity: 'warning',
+      code: 'EMPTY_MEMO'
+    });
+    setTimeout(() => setIsShaking(false), 500);
+  };
+
   const sendMemo = async () => {
     setError(null);
 
@@ -57,11 +68,7 @@ function App() {
     }
 
     if (!memoText.trim()) {
-      setError({
-        message: 'Please enter some text for your memo',
-        severity: 'warning',
-        code: 'EMPTY_MEMO'
-      });
+      handleEmptyMemoClick();
       return;
     }
 
@@ -172,8 +179,13 @@ function App() {
             type="text"
             placeholder="Type your memo..."
             value={memoText}
-            onChange={(e) => setMemoText(e.target.value)}
-            className={`memo-input ${!memoText.trim() ? 'empty' : ''}`}
+            onChange={(e) => {
+              setMemoText(e.target.value);
+              if (error?.code === 'EMPTY_MEMO') {
+                setError(null);
+              }
+            }}
+            className={`memo-input ${!memoText.trim() ? 'empty' : ''} ${isShaking ? 'shake' : ''}`}
             disabled={isLoading}
           />
           <div className="input-tooltip">
@@ -182,8 +194,8 @@ function App() {
         </div>
         
         <button
-          onClick={sendMemo}
-          disabled={isLoading || !wallet || !memoText.trim()}
+          onClick={memoText.trim() ? sendMemo : handleEmptyMemoClick}
+          disabled={isLoading || !wallet}
           className={`send-button ${isLoading ? 'loading' : ''}`}
         >
           {isLoading ? 'Sending...' : 'Send Memo'}
