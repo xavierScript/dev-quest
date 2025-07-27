@@ -17,9 +17,10 @@ function App() {
   const [memoText, setMemoText] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<ErrorType | null>(null);
-  const [successNotification, setSuccessNotification] = useState<{ message: string; txUrl: string } | null>(null);
+  const [successNotification, setSuccessNotification] = useState<{ message: string; txUrl: string; txId: string } | null>(null);
   const [isShaking, setIsShaking] = useState(false);
   const [showWalletHighlight, setShowWalletHighlight] = useState(false);
+  const [isCopied, setIsCopied] = useState(false);
   const wallet = useAnchorWallet();
   const { connection } = useConnection();
 
@@ -120,12 +121,14 @@ function App() {
 
       const program = new Program(idl as AnchorSplMemo, provider);
 
-      const txSig = await program.methods
+      const tx = await program.methods
         .sendMemo(memoText)
         .accounts({
           payer: wallet.publicKey,
           memoProgram: memoProgramID,
-        }).transaction();
+        }).rpc();
+      
+      const txSig = tx; // tx is already a transaction signature string
 
       // Add success animation
       const button = document.querySelector('.send-button');
@@ -138,10 +141,12 @@ function App() {
       const txUrl = `https://explorer.solana.com/tx/${txSig}?cluster=devnet`;
       setSuccessNotification({
         message: 'Memo sent successfully!',
-        txUrl: txUrl
+        txUrl: txUrl,
+        txId: txSig
       });
       
       setMemoText('');
+      setIsCopied(false);
     } catch (err: any) {
       console.error('Error sending memo:', err);
       
@@ -186,14 +191,27 @@ function App() {
       {successNotification && (
         <div className="notification notification-success">
           <span>✅ {successNotification.message}</span>
-          <a 
-            href={successNotification.txUrl}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="notification-link"
-          >
-            View transaction
-          </a>
+          <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
+            <a 
+              href={successNotification.txUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="notification-link"
+            >
+              View transaction
+            </a>
+            <button 
+              className={`copy-button ${isCopied ? 'copied' : ''}`}
+              onClick={() => {
+                navigator.clipboard.writeText(successNotification.txId);
+                setIsCopied(true);
+                setTimeout(() => setIsCopied(false), 2000);
+              }}
+            >
+              <span className="copy-icon">{isCopied ? '✓' : '📋'}</span>
+              {isCopied ? 'Copied!' : 'Copy ID'}
+            </button>
+          </div>
         </div>
       )}
 

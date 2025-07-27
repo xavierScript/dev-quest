@@ -513,14 +513,48 @@ body {
 }
 
 .notification-link {
-  color: inherit;
-  text-decoration: underline;
-  opacity: 0.8;
-  transition: opacity 0.2s;
+  color: #14F195;
+  text-decoration: none;
+  margin-left: 10px;
+  font-size: 0.9em;
 }
 
 .notification-link:hover {
-  opacity: 1;
+  text-decoration: underline;
+}
+
+.copy-button {
+  background: rgba(255, 255, 255, 0.1);
+  border: none;
+  padding: 4px 8px;
+  border-radius: 4px;
+  color: #fff;
+  font-size: 0.85em;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-left: 10px;
+  transition: all 0.2s ease;
+}
+
+.copy-button:hover {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+.copy-button.copied {
+  background: #14F195;
+  color: #000;
+}
+
+.copy-icon {
+  width: 14px;
+  height: 14px;
+  transition: transform 0.2s ease;
+}
+
+.copied .copy-icon {
+  transform: scale(0.8);
 }
 
 /* Error message styling */
