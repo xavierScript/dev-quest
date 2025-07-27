@@ -167,14 +167,19 @@ function App() {
           </div>
         )}
         
-        <input
-          type="text"
-          placeholder="Type your memo..."
-          value={memoText}
-          onChange={(e) => setMemoText(e.target.value)}
-          className="memo-input"
-          disabled={isLoading}
-        />
+        <div className="memo-input-container">
+          <input
+            type="text"
+            placeholder="Type your memo..."
+            value={memoText}
+            onChange={(e) => setMemoText(e.target.value)}
+            className={`memo-input ${!memoText.trim() ? 'empty' : ''}`}
+            disabled={isLoading}
+          />
+          <div className="input-tooltip">
+            Please enter your memo text here
+          </div>
+        </div>
         
         <button
           onClick={sendMemo}

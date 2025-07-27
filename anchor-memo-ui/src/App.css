@@ -54,6 +54,37 @@ body {
   opacity: 1;
 }
 
+/* Input tooltip styles */
+.memo-input-container {
+  position: relative;
+  width: 100%;
+}
+
+.memo-input.empty:focus {
+  border-color: #ff9800;
+  box-shadow: 0 0 0 2px rgba(255, 152, 0, 0.2);
+}
+
+.input-tooltip {
+  position: absolute;
+  left: 0;
+  bottom: calc(100% + 8px);
+  background-color: rgba(255, 152, 0, 0.9);
+  color: #fff;
+  padding: 6px 12px;
+  border-radius: 4px;
+  font-size: 0.85rem;
+  opacity: 0;
+  transform: translateY(5px);
+  transition: all 0.2s ease-in-out;
+  pointer-events: none;
+}
+
+.memo-input.empty:focus + .input-tooltip {
+  opacity: 1;
+  transform: translateY(0);
+}
+
 /* Floating particles animation */
 .particles {
   position: fixed;
