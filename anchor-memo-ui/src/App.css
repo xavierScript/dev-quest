@@ -1,11 +1,13 @@
-/* Modern gradient background with animated particles */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Montserrat:wght@400;600;700&display=swap');
+
 body {
-  margin: 0;
-  background: linear-gradient(-45deg, #667eea, #764ba2, #f093fb, #f5576c);
+  font-family: 'Montserrat', 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
+  background: linear-gradient(-45deg, #0f1d3c, #1a2c4e, #243b6b, #2d4a88);
   background-size: 400% 400%;
   animation: gradientShift 15s ease infinite;
   min-height: 100vh;
-  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  margin: 0;
+  color: #e0e4ed;
 }
 
 @keyframes gradientShift {
@@ -28,11 +30,15 @@ body {
 
 .particle {
   position: absolute;
-  width: 4px;
-  height: 4px;
-  background: rgba(255, 255, 255, 0.3);
+  width: 3px;
+  height: 3px;
+  background: rgba(89, 147, 255, 0.4);
   border-radius: 50%;
   animation: float 6s ease-in-out infinite;
+  filter: blur(1px);
+  box-shadow: 0 0 10px rgba(89, 147, 255, 0.6),
+              0 0 20px rgba(89, 147, 255, 0.3),
+              0 0 30px rgba(89, 147, 255, 0.1);
 }
 
 .particle:nth-child(1) { left: 10%; animation-delay: 0s; }
@@ -65,15 +71,30 @@ body {
 }
 
 .glass-card {
-  background: rgba(255, 255, 255, 0.1);
-  backdrop-filter: blur(20px);
-  border-radius: 24px;
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  padding: 3rem;
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
-  animation: slideInUp 0.8s ease-out;
-  max-width: 500px;
+  background: rgba(20, 30, 60, 0.45);
+  backdrop-filter: blur(28px);
+  border-radius: 28px;
+  border: 1.5px solid rgba(89, 147, 255, 0.2);
+  padding: 3.5rem 2.5rem 2.5rem 2.5rem;
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.25),
+              0 2px 4px rgba(89, 147, 255, 0.1);
+  max-width: 520px;
   width: 100%;
+  margin: 2rem auto;
+  position: relative;
+  overflow: hidden;
+}
+
+.glass-card::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: radial-gradient(circle at center, rgba(89, 147, 255, 0.1) 0%, transparent 50%);
+  animation: glowPulse 4s ease-in-out infinite;
+  pointer-events: none;
 }
 
 @keyframes slideInUp {
@@ -89,14 +110,16 @@ body {
 
 /* Title with gradient text and animation */
 .app-title {
+  font-family: 'Montserrat', 'Inter', sans-serif;
+  font-size: 2.7rem;
+  font-weight: 700;
+  letter-spacing: 0.01em;
+  margin-bottom: 2.2rem;
+  text-align: center;
   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
-  font-size: 2.5rem;
-  font-weight: 700;
-  margin-bottom: 2rem;
-  text-align: center;
   animation: titleGlow 2s ease-in-out infinite alternate;
 }
 
@@ -107,8 +130,9 @@ body {
 
 /* Wallet button styling */
 .wallet-button-container {
-  margin-bottom: 2rem;
-  animation: fadeIn 1s ease-out 0.3s both;
+  margin-bottom: 2.2rem;
+  display: flex;
+  justify-content: center;
 }
 
 @keyframes fadeIn {
@@ -118,27 +142,33 @@ body {
 
 /* Input field with modern styling */
 .memo-input {
-  width: 100%;
-  padding: 1rem 1.5rem;
-  border: 2px solid rgba(255, 255, 255, 0.2);
-  border-radius: 12px;
-  background: rgba(255, 255, 255, 0.1);
-  color: white;
-  font-size: 1rem;
-  margin-bottom: 1.5rem;
-  transition: all 0.3s ease;
-  animation: slideInLeft 0.8s ease-out 0.6s both;
+  width: calc(100% - 3.4rem); /* Match button width */
+  padding: 1.1rem 1.7rem;
+  border: 2px solid rgba(89, 147, 255, 0.2);
+  border-radius: 14px;
+  background: rgba(20, 30, 60, 0.45);
+  color: #ffffff;
+  font-size: 1.08rem;
+  font-family: 'Inter', 'Montserrat', sans-serif;
+  margin-bottom: 1.7rem;
+  transition: all 0.3s cubic-bezier(.4,2,.6,1);
+  box-shadow: 0 1px 6px rgba(89, 147, 255, 0.1);
+  margin-left: auto;
+  margin-right: auto;
+  display: block;
+  box-sizing: border-box;
 }
 
 .memo-input::placeholder {
-  color: rgba(255, 255, 255, 0.6);
+  color: rgba(224, 228, 237, 0.6);
+  font-family: 'Inter', 'Montserrat', sans-serif;
 }
 
 .memo-input:focus {
   outline: none;
-  border-color: #667eea;
-  box-shadow: 0 0 20px rgba(102, 126, 234, 0.3);
-  transform: scale(1.02);
+  border-color: #764ba2;
+  box-shadow: 0 0 24px rgba(102, 126, 234, 0.18);
+  background: rgba(255,255,255,0.22);
 }
 
 @keyframes slideInLeft {
@@ -157,15 +187,19 @@ body {
   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
   color: white;
   border: none;
-  padding: 1rem 2rem;
-  border-radius: 12px;
-  font-size: 1.1rem;
-  font-weight: 600;
+  padding: 1.1rem 1.7rem;
+  border-radius: 14px;
+  font-size: 1.13rem;
+  font-family: 'Montserrat', 'Inter', sans-serif;
+  font-weight: 700;
   cursor: pointer;
-  transition: all 0.3s ease;
+  transition: all 0.25s cubic-bezier(.4,2,.6,1);
   position: relative;
   overflow: hidden;
-  animation: slideInRight 0.8s ease-out 0.9s both;
+  box-shadow: 0 2px 12px rgba(102, 126, 234, 0.13);
+  margin: 0 auto;
+  display: block;
+  width: calc(100% - 3.4rem); /* Match input field width accounting for padding */
 }
 
 .send-button::before {
@@ -184,12 +218,13 @@ body {
 }
 
 .send-button:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 10px 25px rgba(102, 126, 234, 0.4);
+  background: linear-gradient(135deg, #764ba2 0%, #667eea 100%);
+  box-shadow: 0 6px 24px rgba(102, 126, 234, 0.18);
+  transform: translateY(-2px) scale(1.03);
 }
 
 .send-button:active {
-  transform: translateY(0);
+  transform: scale(0.98);
 }
 
 @keyframes slideInRight {
@@ -209,14 +244,64 @@ body {
 }
 
 @keyframes successPulse {
-  0% { transform: scale(1); }
-  50% { transform: scale(1.05); }
-  100% { transform: scale(1); }
+  0% { 
+    transform: scale(1);
+    box-shadow: 0 0 0 0 rgba(89, 147, 255, 0.4);
+  }
+  50% { 
+    transform: scale(1.02);
+    box-shadow: 0 0 30px rgba(89, 147, 255, 0.6);
+  }
+  100% { 
+    transform: scale(1);
+    box-shadow: 0 0 0 0 rgba(89, 147, 255, 0.4);
+  }
+}
+
+/* Add ripple effect on success */
+.glass-card.success::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 120%;
+  height: 120%;
+  transform: translate(-50%, -50%);
+  background: radial-gradient(circle, rgba(89, 147, 255, 0.2) 0%, transparent 70%);
+  animation: rippleEffect 1s ease-out forwards;
+  pointer-events: none;
+}
+
+@keyframes rippleEffect {
+  0% {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(0.3);
+  }
+  100% {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(1);
+  }
 }
 
 /* Loading animation */
 .loading {
   position: relative;
+  cursor: wait;
+}
+
+.loading::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 24px;
+  height: 24px;
+  margin: -12px 0 0 -12px;
+  border-radius: 50%;
+  border: 2px solid rgba(255, 255, 255, 0.15);
+  border-top-color: #ffffff;
+  animation: spin 0.6s linear infinite;
+  box-shadow: 0 0 10px rgba(89, 147, 255, 0.3);
 }
 
 .loading::after {
@@ -224,13 +309,12 @@ body {
   position: absolute;
   top: 50%;
   left: 50%;
-  width: 20px;
-  height: 20px;
-  margin: -10px 0 0 -10px;
-  border: 2px solid rgba(255, 255, 255, 0.3);
-  border-top: 2px solid white;
+  width: 40px;
+  height: 40px;
+  margin: -20px 0 0 -20px;
   border-radius: 50%;
-  animation: spin 1s linear infinite;
+  border: 2px solid rgba(89, 147, 255, 0.1);
+  animation: pulse 1s ease-out infinite;
 }
 
 @keyframes spin {
@@ -241,21 +325,109 @@ body {
 /* Responsive design */
 @media (max-width: 768px) {
   .glass-card {
-    padding: 2rem;
+    padding: 1.5rem 0.7rem 1.5rem 0.7rem;
     margin: 1rem;
   }
   
   .app-title {
-    font-size: 2rem;
+    font-size: 1.5rem;
+  }
+  
+  .custom-wallet-button, .wallet-adapter-button {
+    min-width: 0;
+    max-width: 100%;
+    font-size: 0.98rem;
+    padding: 0.7rem 0.7rem;
   }
   
   .memo-input {
-    padding: 0.8rem 1.2rem;
+    padding: 0.7rem 0.7rem;
+    font-size: 0.98rem;
   }
   
   .send-button {
-    padding: 0.8rem 1.5rem;
-    font-size: 1rem;
+    padding: 0.7rem 1.1rem;
+    font-size: 0.98rem;
+  }
+}
+
+/* Notifications styling */
+.notification {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  padding: 1rem 1.5rem;
+  border-radius: 12px;
+  font-size: 0.95rem;
+  animation: slideIn 0.3s ease-out;
+  text-align: left;
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  max-width: 400px;
+  backdrop-filter: blur(10px);
+}
+
+.notification-success {
+  background: rgba(52, 199, 89, 0.2);
+  border: 1px solid rgba(52, 199, 89, 0.3);
+  color: #34c759;
+}
+
+.notification-link {
+  color: inherit;
+  text-decoration: underline;
+  opacity: 0.8;
+  transition: opacity 0.2s;
+}
+
+.notification-link:hover {
+  opacity: 1;
+}
+
+/* Error message styling */
+.error-message {
+  margin: 1rem 0;
+  padding: 1rem;
+  border-radius: 12px;
+  font-size: 0.95rem;
+  animation: fadeIn 0.3s ease-out;
+  text-align: center;
+}
+
+.error-warning {
+  background: rgba(255, 171, 0, 0.1);
+  border: 1px solid rgba(255, 171, 0, 0.2);
+  color: #ffab00;
+}
+
+.error-error {
+  background: rgba(255, 69, 58, 0.1);
+  border: 1px solid rgba(255, 69, 58, 0.2);
+  color: #ff453a;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateX(100px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
   }
 }
 

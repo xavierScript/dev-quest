@@ -4,17 +4,30 @@ import { WalletMultiButton } from '@solana/wallet-adapter-react-ui';
 import { AnchorProvider, Program, web3, setProvider } from '@coral-xyz/anchor';
 import idl from './anchor_spl_memo.json';
 import type { AnchorSplMemo } from './anchor_spl_memo';
+import type { ErrorType } from './types';
 import './App.css';
 
-const programID = new web3.PublicKey('38CCrZs232VvV1aJqTKyvYNUwxC8zcmRwzwSFmh54A4y');
+// const programID = new web3.PublicKey('38CCrZs232VvV1aJqTKyvYNUwxC8zcmRwzwSFmh54A4y');
 const memoProgramID = new web3.PublicKey('MemoSq4gqABAXKb96qnH8TysNcWxMyWCqXgDLGmfcHr');
+
 
 function App() {
   const [memoText, setMemoText] = useState('');
   const [isLoading, setIsLoading] = useState(false);
-  const [isSuccess, setIsSuccess] = useState(false);
+  const [error, setError] = useState<ErrorType | null>(null);
+  const [successNotification, setSuccessNotification] = useState<{ message: string; txUrl: string } | null>(null);
   const wallet = useAnchorWallet();
   const { connection } = useConnection();
+
+  // Auto-hide success notification
+  useEffect(() => {
+    if (successNotification) {
+      const timer = setTimeout(() => {
+        setSuccessNotification(null);
+      }, 5000); // Hide after 5 seconds
+      return () => clearTimeout(timer);
+    }
+  }, [successNotification]);
 
   // Create floating particles
   useEffect(() => {
@@ -32,18 +45,27 @@ function App() {
   }, []);
 
   const sendMemo = async () => {
+    setError(null);
+
     if (!wallet) {
-      alert('⚠️ Connect your wallet first.');
+      setError({
+        message: 'Please connect your wallet to send memos',
+        severity: 'warning',
+        code: 'NO_WALLET'
+      });
       return;
     }
 
     if (!memoText.trim()) {
-      alert('⚠️ Please enter a memo text.');
+      setError({
+        message: 'Please enter some text for your memo',
+        severity: 'warning',
+        code: 'EMPTY_MEMO'
+      });
       return;
     }
 
     setIsLoading(true);
-    setIsSuccess(false);
 
     try {
       const provider = new AnchorProvider(connection, wallet, {});
@@ -51,28 +73,13 @@ function App() {
 
       const program = new Program(idl as AnchorSplMemo, provider);
 
-      // Debug logs
-    console.log('IDL:', idl);
-    console.log('Program methods:', Object.keys((program as any).methods));
-    console.log('Trying to call sendMemo:', (program as any).methods.sendMemo);
-
       const txSig = await program.methods
         .sendMemo(memoText)
         .accounts({
           payer: wallet.publicKey,
           memoProgram: memoProgramID,
-        }).postInstructions([
-    web3.SystemProgram.transfer({
-      fromPubkey: wallet.publicKey,
-      toPubkey: web3.Keypair.generate().publicKey,
-      lamports: 1,
-    })
-  ])
-        .rpc();
+        }).transaction();
 
-      console.log(txSig);
-      setIsSuccess(true);
-      
       // Add success animation
       const button = document.querySelector('.send-button');
       if (button) {
@@ -80,11 +87,43 @@ function App() {
         setTimeout(() => button.classList.remove('success-animation'), 600);
       }
 
-      alert(`✅ Memo sent!\nTx Signature:\n${txSig}`);
+      // Show success message with transaction details
+      const txUrl = `https://explorer.solana.com/tx/${txSig}?cluster=devnet`;
+      setSuccessNotification({
+        message: 'Memo sent successfully!',
+        txUrl: txUrl
+      });
+      
       setMemoText('');
-    } catch (err) {
-      console.error('❌ Error sending memo:', err);
-      alert('❌ Failed to send memo. Check console.');
+    } catch (err: any) {
+      console.error('Error sending memo:', err);
+      
+      // Handle different types of errors
+      if (err.message?.includes('insufficient funds')) {
+        setError({
+          message: 'Insufficient funds in your wallet to complete this transaction',
+          severity: 'error',
+          code: 'INSUFFICIENT_FUNDS'
+        });
+      } else if (err.message?.includes('User rejected')) {
+        setError({
+          message: 'Transaction was cancelled by user',
+          severity: 'warning',
+          code: 'USER_CANCELLED'
+        });
+      } else if (err.message?.includes('timeout')) {
+        setError({
+          message: 'Transaction timed out. Please try again',
+          severity: 'error',
+          code: 'TIMEOUT'
+        });
+      } else {
+        setError({
+          message: 'Failed to send memo. Please try again',
+          severity: 'error',
+          code: 'UNKNOWN_ERROR'
+        });
+      }
     } finally {
       setIsLoading(false);
     }
@@ -92,15 +131,36 @@ function App() {
 
   return (
     <div className="app-container">
+      {/* Success notification */}
+      {successNotification && (
+        <div className="notification notification-success">
+          <span>✅ {successNotification.message}</span>
+          <a 
+            href={successNotification.txUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="notification-link"
+          >
+            View transaction
+          </a>
+        </div>
+      )}
+
       {/* Floating particles background */}
       <div className="particles"></div>
       
       <div className="glass-card">
-        <h1 className="app-title">📜 Solana Memo Sender</h1>
+        <h1 className="app-title">⛓️ MemoChain</h1>
         
         <div className="wallet-button-container">
-          <WalletMultiButton />
+          <WalletMultiButton className="custom-wallet-button" />
         </div>
+
+        {error && (
+          <div className={`error-message error-${error.severity}`}>
+            {error.message}
+          </div>
+        )}
         
         <input
           type="text"
