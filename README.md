@@ -281,7 +281,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 - Anchor Framework
 - Solana Program Library
 - React Community
-
+- Codigo ai
 ---
 
 Built with ❤️ by xavierScript
