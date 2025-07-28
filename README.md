@@ -16,9 +16,73 @@ MemoChain is a decentralized application (dApp) built on the Solana blockchain t
 
 ## 🏗️ Technical Architecture
 
+```mermaid
+graph TD
+    subgraph Frontend ["Frontend (React + TypeScript)"]
+        App[App.tsx]
+        subgraph Components ["UI Components"]
+            PS[ParticlesBackground]
+            MI[MemoInput]
+            EM[ErrorMessage]
+            SN[SuccessNotification]
+        end
+        subgraph Hooks ["Custom Hooks"]
+            MC[useMemoChain]
+        end
+        subgraph Constants ["Configuration"]
+            CO[constants.ts]
+        end
+    end
+
+    subgraph Blockchain ["Blockchain Integration"]
+        WA[Wallet Adapter]
+        AP[Anchor Provider]
+        MP[Memo Program]
+    end
+
+    subgraph Network ["Solana Network"]
+        DN[Devnet]
+        MM[Memo Program Contract]
+    end
+
+    %% Component Relationships
+    App --> PS
+    App --> MI
+    App --> EM
+    App --> SN
+    App --> MC
+
+    %% Hook Dependencies
+    MC --> WA
+    MC --> AP
+    MC --> MP
+
+    %% Data Flow
+    WA --> DN
+    AP --> DN
+    MP --> MM
+    MM --> DN
+
+    style Frontend fill:#f9f,stroke:#333,stroke-width:2px
+    style Blockchain fill:#bbf,stroke:#333,stroke-width:2px
+    style Network fill:#bfb,stroke:#333,stroke-width:2px
+```
+
+### Component Structure
+```
+App
+├── ParticlesBackground
+├── WalletMultiButton (from @solana/wallet-adapter-react-ui)
+├── ErrorMessage
+├── MemoInput
+├── SuccessNotification
+└── useMemoChain (Custom Hook)
+```
+
 ### Frontend Stack
-- **React**: Core UI framework
-- **TypeScript**: Type-safe development
+- **React 19.1**: Core UI framework
+- **TypeScript 5.8**: Type-safe development
+- **Vite 7.0**: Build tool
 - **@solana/wallet-adapter**: Wallet integration
 - **@coral-xyz/anchor**: Solana program interaction
 
@@ -26,21 +90,50 @@ MemoChain is a decentralized application (dApp) built on the Solana blockchain t
 - **Anchor Framework**: Solana program development
 - **Solana Program Library (SPL)**: Memo program integration
 
-### Key Components
-1. **Wallet Integration Layer**
-   - Seamless connection with Solana wallets
-   - Real-time wallet state management
-   - Secure transaction signing
+### Data Flow
+```
+User Input → MemoInput
+             ↓
+       useMemoChain Hook
+             ↓
+    Wallet Adapter/Provider
+             ↓
+      Solana Blockchain
+             ↓
+     Transaction Result
+             ↓
+UI Updates (Success/Error)
+```
 
-2. **Transaction Management**
-   - Async transaction handling
-   - Retry mechanism for failed transactions
-   - Transaction signature verification
+### Project Structure
+```
+src/
+├── components/
+│   ├── ErrorMessage.tsx
+│   ├── MemoInput.tsx
+│   ├── ParticlesBackground.tsx
+│   └── SuccessNotification.tsx
+├── hooks/
+│   └── useMemoChain.ts
+├── CONSTANTS/
+│   └── constants.ts
+├── types/
+│   └── types.ts
+├── idl/
+│   ├── anchor_spl_memo.json
+│   └── anchor_spl_memo.ts
+├── App.tsx
+└── main.tsx
+```
 
-3. **UI/UX Components**
-   - Glassmorphic design system
-   - Animated feedback systems
-   - Responsive layout architecture
+### Transaction Flow
+```
+1. User initiates transaction
+2. Wallet signs transaction
+3. Transaction sent to Solana
+4. Wait for confirmation
+5. Update UI with result
+```
 
 ## 🎯 Performance Considerations
 
