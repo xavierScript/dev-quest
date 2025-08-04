@@ -279,7 +279,7 @@ VITE_NETWORK=devnet  # or mainnet-beta
 - Anchor Framework
 - Solana Program Library
 - React Community
-
+- Codigo ai
 ---
 
 Built with ❤️ by xavierScript
